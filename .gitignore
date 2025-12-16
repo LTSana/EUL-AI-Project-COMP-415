@@ -1,6 +1,10 @@
+@ -1,207 +1,256 @@
+@ -1,13 +1,12 @@
 # Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[codz]
+*.py[cod]
 *$py.class
 
 # C extensions
@@ -8,6 +12,9 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+env/
+venv/
+ENV/
 build/
 develop-eggs/
 dist/
@@ -17,6 +24,7 @@ eggs/
 lib/
 lib64/
 parts/
+@ -20,188 +19,66 @@ parts/
 sdist/
 var/
 wheels/
@@ -62,6 +70,7 @@ db.sqlite3
 db.sqlite3-journal
 
 # Flask stuff:
+# Flask
 instance/
 .webassets-cache
 
@@ -70,10 +79,43 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Models and cache
+models/
+*.pth
+*.pt
+*.bin
+*.ckpt
+
+# Audio files
+static/audio/*.wav
+static/audio/*.mp3
+!static/audio/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
 
 # PyBuilder
 .pybuilder/
 target/
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -93,12 +135,20 @@ ipython_config.py
 #   having no cross-platform support, pipenv may install dependencies that don't work, or not
 #   install all needed dependencies.
 #Pipfile.lock
+# Database
+*.db
+*.sqlite
+*.sqlite3
 
 # UV
 #   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
 #   This is especially recommended for binary packages to ensure reproducibility, and is more
 #   commonly ignored for libraries.
 #uv.lock
+# Temporary files
+*.tmp
+temp/
+tmp/
 
 # poetry
 #   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
@@ -107,6 +157,9 @@ ipython_config.py
 #   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
 #poetry.lock
 #poetry.toml
+# OS
+Thumbs.db
+.DS_Store
 
 # pdm
 #   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
@@ -205,3 +258,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+# Documentation
+docs/_build/
+.model_cache
+audio_output
