@@ -76,87 +76,57 @@ def health():
 
 @app.route('/api/synthesize', methods=['POST'])
 def synthesize():
-    """
-    Main TTS synthesis endpoint
-    
-    Request JSON:
-        {
-            "text": "Text to convert to speech",
-            "voice_preset": "v2/en_speaker_6" (optional)
-        }
-    
-    Returns:
-        JSON with audio file URL or error message
-    """
     try:
-        # Get JSON data
         data = request.get_json()
         
         if not data or 'text' not in data:
-            return jsonify({
-                'success': False,
-                'error': 'No text provided'
-            }), 400
+            return jsonify({'success': False, 'error': 'No text provided'}), 400
         
         text = data.get('text', '')
-        voice_preset = data.get('voice_preset', None)
         
-        # Validate text
+        voice_preset = data.get('voice_preset')
+        # If the frontend sends "" or null, force it to None for Bark
+        if not voice_preset or voice_preset == "" or voice_preset == "null":
+            voice_preset = None
+        
+        # Validate and preprocess text
         is_valid, error_msg = TextProcessor.validate_text(
-            text,
-            max_length=app.config['MAX_TEXT_LENGTH']
+            text, max_length=app.config['MAX_TEXT_LENGTH']
         )
         
         if not is_valid:
-            return jsonify({
-                'success': False,
-                'error': error_msg
-            }), 400
+            return jsonify({'success': False, 'error': error_msg}), 400
         
-        # Preprocess text
         processed_text = TextProcessor.preprocess_for_tts(
-            text,
-            max_length=app.config['MAX_TEXT_LENGTH']
+            text, max_length=app.config['MAX_TEXT_LENGTH']
         )
         
-        logger.info(f"Synthesizing text: {processed_text[:50]}...")
-        
-        # Generate unique filename
+        # Generate unique filename (The backend generates this as you requested)
         audio_id = str(uuid.uuid4())
-        requested_format = app.config['AUDIO_FORMAT']
-        audio_filename = f"{audio_id}.{requested_format}"
+        audio_filename = f"{audio_id}.{app.config['AUDIO_FORMAT']}"
         audio_path = app.config['AUDIO_OUTPUT_DIR'] / audio_filename
         
-        # Get TTS engine and generate speech
+        # Get TTS engine and generate
         engine = get_tts_engine()
-        actual_output_path = engine.text_to_speech_file(
+        engine.text_to_speech_file(
             processed_text,
             audio_path,
             voice_preset=voice_preset
         )
         
-        # Use actual output filename (in case format changed due to fallback)
-        actual_filename = audio_filename
-        
-        # Estimate duration
-        estimated_duration = TextProcessor.estimate_duration(processed_text)
-        
-        # Return success response
+        # Return success with the backend-generated URL
         return jsonify({
             'success': True,
-            'audio_url': f'/audio/{actual_filename}',
+            'audio_url': f'/audio/{audio_filename}',
             'audio_id': audio_id,
             'text': processed_text,
-            'estimated_duration': estimated_duration,
+            'estimated_duration': TextProcessor.estimate_duration(processed_text),
             'timestamp': datetime.now().isoformat()
         })
         
     except Exception as e:
         logger.error(f"Error in synthesis: {e}", exc_info=True)
-        return jsonify({
-            'success': False,
-            'error': f'Synthesis failed: {str(e)}'
-        }), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/audio/<filename>')
 def serve_audio(filename):

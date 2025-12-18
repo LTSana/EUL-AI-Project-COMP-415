@@ -3,49 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Accessible text-to-speech platform for everyone">
-    <meta name="keywords" content="text to speech, TTS, accessibility, AI, speech synthesis">
-    <meta name="author" content="TTS Accessibility Team">
-    <title>{% block title %}Text-to-Speech Buddy{% endblock %}</title>
+    <meta name="description" content="Accessible text-to-speech platform">
+    <title>{% block title %}TTS Buddy{% endblock %}</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔊</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Skip to main content for accessibility -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
     
-    <!-- Header -->
     <header class="site-header">
-        {% block header %}
         <div class="container">
-            <h1>🔊 Text-to-Speech Buddy</h1>
-            <p class="subtitle">Accessible text-to-speech for everyone</p>
+            <div class="logo-area">
+                <h1>Text-To-Speech Buddy</h1>
+                <p class="subtitle">Natural AI voice synthesis.</p>
+            </div>
         </div>
-        {% endblock %}
     </header>
     
-    <!-- Main Content -->
     <main id="main-content" class="container">
         {% block content %}{% endblock %}
     </main>
     
-    <!-- Footer -->
     <footer class="site-footer">
-        {% block footer %}
         <div class="container">
-            <p>Built with ❤️ for accessibility | Using Bark TTS Model</p>
-            <p><a href="/about">About This Project</a></p>
+            <p>Built with precision | Using Bark TTS</p>
+            <p><a href="/about" class="footer-link">About Project</a></p>
         </div>
-        {% endblock %}
     </footer>
     
-    <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block extra_js %}{% endblock %}
 </body>

@@ -1,171 +1,114 @@
 {% extends "base.html" %}
 
-{% block title %}Text-to-Speech Buddy - AI-Powered TTS{% endblock %}
-
 {% block content %}
-<!-- Input Section -->
-<section class="input-section">
-    <h2>Enter Text to Convert</h2>
-    <label for="text-input" class="input-label">
-        Type or paste your text below (maximum 500 characters)
-    </label>
-    <textarea 
-        id="text-input" 
-        class="text-input" 
-        placeholder="Enter text you want to convert to speech... For example: 'Hello! This is a test of the text-to-speech system.'"
-        maxlength="500"
-        aria-label="Text input for speech synthesis"
-        rows="6"
-    ></textarea>
-    <div class="char-counter">
-        <span id="char-count">0</span> / 500 characters
+<section class="card">
+    <div class="card-header">
+        <h2>Generate Speech</h2>
+        <p class="card-description">Convert your text into natural sounding audio presets.</p>
     </div>
+    
+    <div class="card-content">
+        <div class="form-group">
+            <label for="text-input" class="input-label">Your Text</label>
+            <textarea 
+                id="text-input" 
+                class="text-input" 
+                placeholder="Type or paste your text here..."
+                maxlength="500"
+                rows="5"
+            ></textarea>
+            <div class="char-counter">
+                <span id="char-count">0</span> / 500
+            </div>
+        </div>
 
-    <!-- Voice Selection -->
-    <div class="voice-selection">
-        <label for="voice-select">Choose Voice (Optional)</label>
-        <select id="voice-select" class="voice-select" aria-label="Voice selection">
-            <option value="">Loading voices...</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="voice-select" class="input-label">Voice Preset</label>
+            <select id="voice-select" class="voice-select">
+                <option value="">Loading voices...</option>
+            </select>
+        </div>
 
-    <!-- Action Buttons -->
-    <div class="button-group">
-        <button id="synthesize-btn" class="btn btn-primary" type="button">
-            🎤 Generate Speech
-        </button>
-        <button id="clear-btn" class="btn btn-secondary" type="button">
-            🗑️ Clear
-        </button>
+        <div class="button-group">
+            <button id="synthesize-btn" class="btn btn-primary">
+                Generate Speech
+            </button>
+            <button id="clear-btn" class="btn btn-outline">
+                Clear
+            </button>
+        </div>
     </div>
 </section>
 
-<!-- Status Section -->
-<section id="status-section" class="status-section" style="display: none;">
+<div id="status-section" style="display: none; margin-bottom: 1.5rem;">
     <div id="status-message" class="status-message"></div>
-</section>
-
-<!-- Loading Spinner -->
-<div id="loading-spinner" class="loading-spinner" style="display: none;">
-    <div class="spinner"></div>
-    <p>Generating speech... This may take a few moments.</p>
 </div>
 
-<!-- Audio Section -->
-<section id="audio-section" class="audio-section" style="display: none;">
-    <h2>🎵 Generated Speech</h2>
-    <audio id="audio-player" class="audio-player" controls aria-label="Generated audio player">
-        Your browser does not support the audio element.
-    </audio>
-    <div id="audio-info" class="audio-info"></div>
-    <button id="download-btn" class="btn btn-download" type="button">
-        ⬇️ Download Audio
-    </button>
-</section>
+<div id="loading-spinner" class="loading-container" style="display: none;">
+    <div class="spinner"></div>
+    <p>Processing audio...</p>
+</div>
 
-<!-- Examples Section -->
-<section class="examples-section">
-    <h2>💡 Try These Examples</h2>
-    <p style="margin-bottom: 15px; color: #666;">
-        Click any example to load it into the text field:
-    </p>
-    <div class="example-buttons">
-        <button class="btn-example" type="button" data-text="Hello! This is a test of the text-to-speech system.">
-            Simple Greeting
-        </button>
-        <button class="btn-example" type="button" data-text="Welcome to our accessibility platform. We're using artificial intelligence to convert text into natural-sounding speech.">
-            Platform Introduction
-        </button>
-        <button class="btn-example" type="button" data-text="The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet.">
-            Alphabet Test
-        </button>
-        <button class="btn-example" type="button" data-text="Artificial intelligence is transforming how we interact with technology. Machine learning models can now understand and generate human-like speech with remarkable accuracy.">
-            AI Technology
-        </button>
-        <button class="btn-example" type="button" data-text="Accessibility is not a feature, it's a fundamental human right. Everyone deserves equal access to digital content and services.">
-            Accessibility Message
-        </button>
-        <button class="btn-example" type="button" data-text="Did you know that text-to-speech technology helps millions of people worldwide? From students with learning disabilities to visually impaired individuals, TTS opens doors to information and education.">
-            Educational Content
+<section id="audio-section" class="card audio-card" style="display: none;">
+    <div class="card-header">
+        <h2>Generated Audio</h2>
+    </div>
+    <div class="card-content">
+        <audio id="audio-player" class="audio-player" controls></audio>
+        <div id="audio-info" class="audio-info"></div>
+        <button id="download-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+            Download WAV
         </button>
     </div>
 </section>
 
-<!-- Features Section -->
-<section class="features-section">
-    <h2>✨ Key Features</h2>
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon">🎯</div>
-            <h3>High Quality</h3>
-            <p>Powered by Bark, a state-of-the-art transformer-based TTS model for natural-sounding speech</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🎭</div>
-            <h3>Multiple Voices</h3>
-            <p>Choose from various voice presets, including different genders and speaking styles</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">♿</div>
-            <h3>Accessible</h3>
-            <p>Designed with accessibility in mind, supporting screen readers and keyboard navigation</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3>Fast & Reliable</h3>
-            <p>Efficient processing with real-time feedback and error handling</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">📥</div>
-            <h3>Downloadable</h3>
-            <p>Download generated audio files in WAV format for offline use</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">🆓</div>
-            <h3>Free to Use</h3>
-            <p>Open-source platform available for everyone to use and improve</p>
+<section class="card">
+    <div class="card-header">
+        <h2>Quick Examples</h2>
+    </div>
+    <div class="card-content">
+        <div class="example-grid">
+            <button class="btn-example" data-text="Hello! This is a test of the text-to-speech system.">Simple Greeting</button>
+            <button class="btn-example" data-text="Artificial intelligence is transforming how we interact with technology.">AI Technology</button>
+            <button class="btn-example" data-text="Accessibility is not a feature, it's a fundamental human right.">Accessibility</button>
         </div>
     </div>
 </section>
+
+<div class="features-grid">
+    <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <h3>Fast</h3>
+        <p>Real-time processing with Bark.</p>
+    </div>
+    <div class="feature-item">
+        <div class="feature-icon">🎭</div>
+        <h3>Diverse</h3>
+        <p>Multiple voice styles available.</p>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-// Load voices from API
 async function loadVoices() {
     try {
         const response = await fetch('/api/voices');
         const data = await response.json();
-        
         if (data.success && data.voices) {
             const voiceSelect = document.getElementById('voice-select');
-            voiceSelect.innerHTML = ''; // Clear loading message
-            
-            let defaultSelected = false;
+            voiceSelect.innerHTML = '';
             data.voices.forEach(voice => {
                 const option = document.createElement('option');
-                // Handle null/undefined voice IDs (default voice)
                 option.value = voice.id || '';
                 option.textContent = voice.name;
-                // Select the default voice (first one with no ID)
-                if (!voice.id && !defaultSelected) {
-                    option.selected = true;
-                    defaultSelected = true;
-                }
                 voiceSelect.appendChild(option);
             });
         }
-    } catch (error) {
-        console.error('Error loading voices:', error);
-        const voiceSelect = document.getElementById('voice-select');
-        voiceSelect.innerHTML = '<option value="">Default (voices unavailable)</option>';
+    } catch (e) {
+        document.getElementById('voice-select').innerHTML = '<option value="">Default Voice</option>';
     }
 }
-
-// Load voices when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    loadVoices();
-});
+document.addEventListener('DOMContentLoaded', loadVoices);
 </script>
 {% endblock %}
-

@@ -5,126 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - Text-to-Speech Buddy</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Specific layouts for the About content using your CSS variables */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .badge {
+            background-color: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+            border: 1px solid hsl(var(--border));
+            padding: 0.2rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .ethic-card {
+            border-left: 4px solid hsl(var(--primary));
+        }
+
+        .reference-item {
+            font-size: 0.8rem;
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            border-left: 1px solid hsl(var(--border));
+        }
+
+        .back-nav {
+            margin-top: 2rem;
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>📖 About This Project</h1>
+        <header class="site-header">
+            <h1>About This Project</h1>
             <p class="subtitle">Neural Text-to-Speech for Digital Accessibility</p>
         </header>
 
-        <main>
-            <section class="about-section">
-                <h2>🎯 Project Overview</h2>
-                <p>
-                    This Text-to-Speech Accessibility Platform is an AI-powered web application 
-                    designed to make digital content accessible to everyone. Built as part of an 
-                    artificial intelligence course project, it demonstrates practical applications 
-                    of deep learning for social good.
-                </p>
+        <main class="content-grid">
+            <section class="card">
+                <div class="card-header">
+                    <h2>Project Overview</h2>
+                    <p class="card-description">Purpose and scope of the platform</p>
+                </div>
+                <div class="card-content">
+                    <p>This Text-to-Speech Accessibility Platform is an AI-powered web application designed to make digital content accessible to everyone. Built as part of an artificial intelligence course project, it demonstrates practical applications of deep learning for social good.</p>
+                </div>
             </section>
 
-            <section class="about-section">
-                <h2>🤖 Technology Stack</h2>
-                <div class="tech-list">
-                    <div class="tech-item">
-                        <strong>Frontend:</strong> HTML5, CSS3, JavaScript
-                    </div>
-                    <div class="tech-item">
-                        <strong>Backend:</strong> Flask (Python)
-                    </div>
-                    <div class="tech-item">
-                        <strong>AI Model:</strong> Bark by Suno AI (Transformer-based TTS)
-                    </div>
-                    <div class="tech-item">
-                        <strong>Framework:</strong> PyTorch, Hugging Face Transformers
+            <section class="card">
+                <div class="card-header">
+                    <h2>Technology Stack</h2>
+                    <p class="card-description">Tools and frameworks used in development</p>
+                </div>
+                <div class="card-content">
+                    <div class="badge-list">
+                        <span class="badge">Flask (Python)</span>
+                        <span class="badge">Bark TTS Model</span>
+                        <span class="badge">PyTorch</span>
+                        <span class="badge">Hugging Face Transformers</span>
+                        <span class="badge">HTML5 / CSS3 / ES6+</span>
                     </div>
                 </div>
             </section>
 
-            <section class="about-section">
-                <h2>🧠 AI Methods Used</h2>
-                <ul>
-                    <li><strong>Deep Neural Networks:</strong> Transformer architecture for sequence modeling</li>
-                    <li><strong>Attention Mechanisms:</strong> Self-attention for text-to-audio alignment</li>
-                    <li><strong>Transfer Learning:</strong> Pre-trained models from Hugging Face</li>
-                    <li><strong>Generative AI:</strong> Neural vocoding for audio synthesis</li>
-                </ul>
+            <section class="card">
+                <div class="card-header">
+                    <h2>AI Methods</h2>
+                    <p class="card-description">Technical implementation details</p>
+                </div>
+                <div class="card-content">
+                    
+                    <div class="features-grid" style="margin-bottom: 0;">
+                        <div class="feature-item">
+                            <h3>Deep Neural Networks</h3>
+                            <p>Transformer architecture for sequence modeling and audio token prediction.</p>
+                        </div>
+                        <div class="feature-item">
+                            <h3>Attention Mechanisms</h3>
+                            <p>Multi-head self-attention for precise text-to-audio alignment and prosody.</p>
+                        </div>
+                    </div>
+                </div>
             </section>
 
-            <section class="about-section">
-                <h2>🎓 Educational Goals</h2>
-                <p>This project demonstrates:</p>
-                <ul>
-                    <li>Practical implementation of AI principles and algorithms</li>
-                    <li>Data-driven reasoning and decision-making</li>
-                    <li>Real-world applications of machine learning</li>
-                    <li>Ethical considerations in AI development</li>
-                    <li>Full-stack development with AI integration</li>
-                </ul>
+            <section class="card ethic-card">
+                <div class="card-header">
+                    <h2>Ethical Considerations</h2>
+                    <p class="card-description">Responsible development and risk mitigation</p>
+                </div>
+                <div class="card-content">
+                    <ul class="form-group" style="list-style: disc; padding-left: 1.5rem; font-size: 0.875rem;">
+                        <li><strong>Voice Cloning:</strong> Mitigating deepfake risks through responsible model use.</li>
+                        <li><strong>Algorithmic Bias:</strong> Addressing accent and pronunciation variations in training data.</li>
+                        <li><strong>Privacy:</strong> Localized processing ensures user text data is not stored permanently.</li>
+                    </ul>
+                </div>
             </section>
 
-            <section class="about-section">
-                <h2>♿ Accessibility Features</h2>
-                <ul>
-                    <li>WCAG 2.1 Level AA compliant interface</li>
-                    <li>Keyboard navigation support</li>
-                    <li>Screen reader compatible</li>
-                    <li>High contrast color scheme</li>
-                    <li>Responsive design for all devices</li>
-                </ul>
+            <section class="card">
+                <div class="card-header">
+                    <h2>References</h2>
+                    <p class="card-description">Academic and technical resources</p>
+                </div>
+                <div class="card-content">
+                    <div class="reference-item">Suno AI (2023). Bark: Text-Prompted Generative Audio Model.</div>
+                    <div class="reference-item">Vaswani, A., et al. (2017). Attention Is All You Need. NeurIPS.</div>
+                    <div class="reference-item">W3C Web Accessibility Initiative. WCAG 2.1 Guidelines.</div>
+                </div>
             </section>
 
-            <section class="about-section">
-                <h2>⚖️ Ethical Considerations</h2>
-                <p>We acknowledge the following ethical considerations:</p>
-                <ul>
-                    <li><strong>Deepfake Risks:</strong> Technology could be misused for voice impersonation</li>
-                    <li><strong>Bias:</strong> Training data may contain accent and pronunciation biases</li>
-                    <li><strong>Privacy:</strong> No user data is stored or transmitted</li>
-                    <li><strong>Accessibility:</strong> Tool augments but doesn't replace human interaction</li>
-                    <li><strong>Environmental Impact:</strong> AI models consume computational resources</li>
-                </ul>
-            </section>
-
-            <section class="about-section">
-                <h2>🚀 Future Enhancements</h2>
-                <ul>
-                    <li>OCR integration for image-to-speech conversion</li>
-                    <li>Multi-language support</li>
-                    <li>Custom voice training</li>
-                    <li>PDF and document upload support</li>
-                    <li>User accounts and history</li>
-                    <li>Mobile application</li>
-                </ul>
-            </section>
-
-            <section class="about-section">
-                <h2>👥 Team</h2>
-                <p>
-                    This project was developed as part of an AI course project at [Your University]. 
-                    Team members: [Add your names here]
-                </p>
-            </section>
-
-            <section class="about-section">
-                <h2>📚 References</h2>
-                <ol>
-                    <li>Kim, J., et al. (2021). "Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech." ICML 2021.</li>
-                    <li>Suno AI (2023). Bark: Text-Prompted Generative Audio Model.</li>
-                    <li>Vaswani, A., et al. (2017). "Attention Is All You Need." NeurIPS 2017.</li>
-                    <li>W3C Web Accessibility Initiative. WCAG 2.1 Guidelines.</li>
-                </ol>
-            </section>
-
-            <div class="back-link">
-                <a href="/" class="btn btn-primary">← Back to Home</a>
+            <div class="loading-container">
+                <p class="card-description">Developed for COMP-415 Artificial Intelligence</p>
+                <div class="back-nav">
+                    <a href="/" class="btn btn-outline">Back to Home</a>
+                </div>
             </div>
         </main>
-
-        <footer>
-            <p>Built with ❤️ for accessibility | Using Bark TTS Model</p>
-        </footer>
     </div>
 </body>
 </html>
