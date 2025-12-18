@@ -1,6 +1,6 @@
 /**
  * main.js - TTS Frontend Logic
- * Integrated with Flask backend for dynamic audio filename handling
+ * Rebuilt for Shadcn Zinc aesthetic and full functionality
  */
 
 // ==================== DOM ELEMENTS ====================
@@ -12,10 +12,12 @@ const elements = {
     clearBtn: document.getElementById('clear-btn'),
     statusSection: document.getElementById('status-section'),
     statusMessage: document.getElementById('status-message'),
+    loadingSpinner: document.getElementById('loading-spinner'),
     audioSection: document.getElementById('audio-section'),
     audioPlayer: document.getElementById('audio-player'),
     audioInfo: document.getElementById('audio-info'),
-    downloadBtn: document.getElementById('download-btn')
+    downloadBtn: document.getElementById('download-btn'),
+    exampleBtns: document.querySelectorAll('.btn-example')
 };
 
 // ==================== STATE ====================
@@ -65,6 +67,7 @@ async function handleSynthesize() {
     // UI Loading State
     setLoading(true);
     hideStatus();
+    elements.audioSection.style.display = 'none';
 
     try {
         const response = await fetch('/api/synthesize', {
@@ -72,7 +75,7 @@ async function handleSynthesize() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 text: text,
-                // If "Default" is selected, value is "", sent as null to backend
+                // Ensures empty string is sent as null to avoid the .npz error
                 voice_preset: elements.voiceSelect.value || null
             })
         });
@@ -86,11 +89,11 @@ async function handleSynthesize() {
         // Handle the backend-generated audio URL
         currentAudioUrl = data.audio_url;
         displayResult(data);
-        showStatus('✓ Audio generated successfully', 'success');
+        showStatus('Synthesis complete', 'success');
 
     } catch (error) {
         console.error('Synthesis Error:', error);
-        showStatus(`Error: ${error.message}`, 'error');
+        showStatus(error.message, 'error');
     } finally {
         setLoading(false);
     }
@@ -100,68 +103,107 @@ async function handleSynthesize() {
  * Update the UI with the result from the backend
  */
 function displayResult(data) {
-    // 1. Update Audio Player
     elements.audioPlayer.src = data.audio_url;
-    
-    // 2. Show Audio Section
     elements.audioSection.style.display = 'block';
     
-    // 3. Format Metadata
-    const date = new Date(data.timestamp).toLocaleTimeString();
+    const date = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
     elements.audioInfo.innerHTML = `
-        <div class="metadata-grid">
-            <span><strong>ID:</strong> ${data.audio_id.substring(0, 8)}</span>
-            <span><strong>Duration:</strong> ~${data.estimated_duration}s</span>
-            <span><strong>Generated:</strong> ${date}</span>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 0.75rem; color: hsl(var(--muted-foreground)); margin-top: 1rem;">
+            <div><strong>ID:</strong> ${data.audio_id.substring(0, 8)}</div>
+            <div><strong>Duration:</strong> ~${data.estimated_duration}s</div>
+            <div><strong>Time:</strong> ${date}</div>
+            <div><strong>Format:</strong> WAV</div>
         </div>
     `;
 
-    // 4. Auto-play
-    elements.audioPlayer.play().catch(e => console.log("Autoplay blocked"));
+    elements.audioPlayer.play().catch(() => console.log("Autoplay prevented by browser"));
 }
 
-// ==================== UTILS & UI ====================
+// ==================== EVENT LISTENERS ====================
 
 function setupEventListeners() {
-    // Synthesis Trigger
+    // 1. Main Synthesis Action
     elements.synthesizeBtn.addEventListener('click', handleSynthesize);
 
-    // Character Counter
+    // 2. Quick Examples Implementation
+    elements.exampleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const exampleText = btn.getAttribute('data-text');
+            if (exampleText) {
+                elements.textInput.value = exampleText;
+                elements.charCount.textContent = exampleText.length;
+                hideStatus();
+                elements.audioSection.style.display = 'none';
+                elements.textInput.focus();
+            }
+        });
+    });
+
+    // 3. Text Area Inputs
     elements.textInput.addEventListener('input', () => {
         const length = elements.textInput.value.length;
         elements.charCount.textContent = length;
     });
 
-    // Clear Button
+    // 4. Reset Button
     elements.clearBtn.addEventListener('click', () => {
         elements.textInput.value = '';
         elements.charCount.textContent = '0';
         elements.audioSection.style.display = 'none';
         elements.audioPlayer.src = '';
+        hideStatus();
     });
 
-    // Download Button (uses the URL generated by backend)
+    // 5. Download Action
     elements.downloadBtn.addEventListener('click', () => {
         if (!currentAudioUrl) return;
         const a = document.createElement('a');
         a.href = currentAudioUrl;
-        a.download = `tts-audio-${Date.now()}.wav`;
+        a.download = `speech-${Date.now()}.wav`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
     });
 }
 
+// ==================== UI UTILITIES ====================
+
+/**
+ * Manages the loading state across the UI
+ */
 function setLoading(loading) {
     isGenerating = loading;
-    elements.synthesizeBtn.disabled = loading;
-    elements.synthesizeBtn.textContent = loading ? 'Generating...' : 'Generate Speech';
+    const btn = elements.synthesizeBtn;
+    const spinnerArea = elements.loadingSpinner;
+
+    if (loading) {
+        btn.disabled = true;
+        // Shadcn Zinc Style Inline Spinner
+        btn.innerHTML = `
+            <span style="display: inline-block; width: 12px; height: 12px; border: 2px solid currentColor; border-radius: 50%; border-top-color: transparent; animation: spin 0.6s linear infinite; margin-right: 8px;"></span>
+            Generating...
+        `;
+        if (spinnerArea) spinnerArea.style.display = 'block';
+    } else {
+        btn.disabled = false;
+        btn.textContent = 'Generate Speech';
+        if (spinnerArea) spinnerArea.style.display = 'none';
+    }
 }
 
+/**
+ * Displays status notifications
+ */
 function showStatus(msg, type) {
     elements.statusSection.style.display = 'block';
     elements.statusMessage.textContent = msg;
-    elements.statusMessage.className = `status-message ${type}`;
+    
+    // Reset classes
+    elements.statusMessage.className = 'status-message';
+    if (type === 'error') {
+        elements.statusMessage.classList.add('status-error');
+    }
 }
 
 function hideStatus() {
